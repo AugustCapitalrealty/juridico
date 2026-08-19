@@ -1,0 +1,11 @@
+# Dumps de planilhas de pesquisa nunca entram no repositório: contêm CPF,
+# e-mail e telefone de pessoas físicas. Gere localmente com testes/gerar-dump.py.
+testes/*.json
+!testes/exemplo-minimo.json
+
+# Artefatos locais
+*.xlsx
+*.docx
+*.pdf
+node_modules/
+.DS_Store

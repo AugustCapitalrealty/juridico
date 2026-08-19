@@ -1,0 +1,157 @@
+<meta charset="utf-8">
+<style>
+  body { font-family: Arial, sans-serif; font-size: 11pt; color: #000000; }
+  h1 { font-size: 16pt; text-align: center; }
+  h2 { font-size: 13pt; color: #1f3864; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #808080; padding: 6px; font-size: 10pt; vertical-align: top; }
+  th { background-color: #d9e2f3; text-align: center; font-weight: bold; }
+  .capa { background-color: #1f3864; color: #ffffff; font-size: 18pt;
+          font-weight: bold; text-align: center; padding: 24px; }
+  .preencher { background-color: #fff2cc; font-weight: bold; }
+  .apoio { color: #666666; font-size: 9pt; font-style: italic; }
+  .nota { font-size: 9pt; color: #666666; }
+</style>
+
+<table>
+  <tr><td class="capa">Parecer Pesquisa Reputacional</td></tr>
+</table>
+
+<p>&nbsp;</p>
+
+<h1>Parecer Pesquisa Reputacional</h1>
+
+<p><b>Data da pesquisa:</b> {{DATA_PESQUISA}}</p>
+
+<ul>
+  <li>Empresa pesquisada: {{RAZAO_SOCIAL}}</li>
+  <li>Nome Fantasia: {{NOME_FANTASIA}}</li>
+  <li>CNPJ: {{CNPJ}}</li>
+  <li>Data de abertura do CNPJ: {{DATA_ABERTURA}}</li>
+  <li>Escopo: {{ESCOPO}}</li>
+  <li>Solicita&ccedil;&atilde;o: {{SOLICITACAO}}</li>
+  <li>Empreendimento: {{EMPREENDIMENTO}}</li>
+</ul>
+
+<h2>Indicadores Kronos</h2>
+
+<table>
+  <tr>
+    <th>PESQUISAS</th>
+    <th>RESULTADOS</th>
+    <th>OBSERVA&Ccedil;&Otilde;ES</th>
+  </tr>
+  <tr>
+    <td>Valor envolvido na contrata&ccedil;&atilde;o</td>
+    <td>{{VALOR_CONTRATACAO}}</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Capital Social (Receita Federal)</td>
+    <td>{{CAPITAL_SOCIAL}}</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Faturamento anual Presumido</td>
+    <td>{{FATURAMENTO_PRESUMIDO}}</td>
+    <td>*n&atilde;o substitui a an&aacute;lise do balan&ccedil;o e demais informa&ccedil;&otilde;es cont&aacute;beis da empresa em quest&atilde;o, pela equipe financeira da Capital Realty</td>
+  </tr>
+  <tr>
+    <td>Endere&ccedil;o</td>
+    <td>{{ENDERECO}}</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Valores Exposi&ccedil;&atilde;o Jur&iacute;dica</td>
+    <td>{{EXPOSICAO_JURIDICA}}</td>
+    <td>{{EXPOSICAO_OBS}}</td>
+  </tr>
+  <tr>
+    <td>COMPROT</td>
+    <td>{{COMPROT}}</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>PROTESTOS EM CART&Oacute;RIO</td>
+    <td>{{PROTESTOS_QTD}}</td>
+    <td>{{PROTESTOS_OBS}}</td>
+  </tr>
+  <tr>
+    <td>SERASA</td>
+    <td>{{SERASA_RESULTADO}}</td>
+    <td>{{SERASA_OBS}}</td>
+  </tr>
+</table>
+
+<h2>Endere&ccedil;o Google Maps</h2>
+<p class="preencher">[ A PREENCHER &mdash; inserir captura do Google Maps do endere&ccedil;o: {{ENDERECO}} ]</p>
+
+<h2>Pessoas e Empresas ligadas com apontamentos</h2>
+<p class="apoio">Dados de apoio extra&iacute;dos da planilha:</p>
+<p>&lt;&lt;BLOCO_EMPRESAS_RELACIONADAS&gt;&gt;</p>
+
+<h2>Participa&ccedil;&atilde;o empresarial</h2>
+<p>{{QTD_PARTICIPACOES}} participa&ccedil;&otilde;es em outras empresas mapeadas pela plataforma.</p>
+<p>&lt;&lt;BLOCO_PARTICIPACOES&gt;&gt;</p>
+
+<h2>Quadro societ&aacute;rio e administradores</h2>
+<p>&lt;&lt;BLOCO_SOCIOS&gt;&gt;</p>
+
+<h2>CNAE Principal</h2>
+<p>{{CNAE_PRINCIPAL}}</p>
+
+<h2>CNAE Secund&aacute;rio</h2>
+<p>&lt;&lt;BLOCO_CNAE_SECUNDARIO&gt;&gt;</p>
+
+<h2>Natureza Jur&iacute;dica</h2>
+<p>{{NATUREZA_JURIDICA}}</p>
+
+<h2>M&iacute;dias Negativas Relacionadas e/ou Listas Restritivas</h2>
+<p class="apoio">Classifica&ccedil;&atilde;o da plataforma &mdash; PEP/M&iacute;dias Negativas: {{PEP_MIDIAS}}</p>
+<p class="preencher">[ A PREENCHER &mdash; an&aacute;lise das m&iacute;dias negativas e listas restritivas ]</p>
+
+<h2>Portal da transpar&ecirc;ncia</h2>
+<p>{{TRANSPARENCIA_TEXTO}}</p>
+<p class="apoio">Ocorr&ecirc;ncias localizadas ({{QTD_TRANSPARENCIA}}):</p>
+<p>&lt;&lt;BLOCO_TRANSPARENCIA&gt;&gt;</p>
+
+<h2>Processos</h2>
+<p>{{TEXTO_PROCESSOS}}</p>
+
+<p class="preencher">[ A PREENCHER &mdash; destaque dos processos relevantes, natureza da a&ccedil;&atilde;o, estágio processual e avalia&ccedil;&atilde;o do risco. Use os dados de apoio abaixo. ]</p>
+
+<p class="apoio">Distribui&ccedil;&atilde;o por tribunal e por ano:</p>
+<p>&lt;&lt;BLOCO_RESUMO_PROCESSOS&gt;&gt;</p>
+
+<p class="apoio">Processos em andamento (do maior valor de causa para o menor):</p>
+<p>&lt;&lt;BLOCO_PROCESSOS_ANDAMENTO&gt;&gt;</p>
+
+<h2>Conclus&atilde;o</h2>
+<p class="preencher">[ A PREENCHER &mdash; conclus&atilde;o sobre o risco de exposi&ccedil;&atilde;o jur&iacute;dica ]</p>
+
+<h2>Recomenda&ccedil;&otilde;es Gerais</h2>
+<p>Recomenda-se n&atilde;o compartilhar com a empresa pesquisada que obtivemos tais informa&ccedil;&otilde;es, pois h&aacute; de prevalecer o princ&iacute;pio de presun&ccedil;&atilde;o de inoc&ecirc;ncia ao presente feito.</p>
+
+<h2>Avalia&ccedil;&atilde;o do Comit&ecirc;</h2>
+<p class="preencher">[ A PREENCHER &mdash; apontamentos do comit&ecirc; ]</p>
+
+<h2>Resultado da an&aacute;lise de grau de risco por &aacute;rea envolvida</h2>
+<table>
+  <tr>
+    <th>FINANCEIRO</th>
+    <th>JUR&Iacute;DICO</th>
+    <th>T&Eacute;CNICO</th>
+  </tr>
+  <tr>
+    <td class="preencher">[ A PREENCHER ]</td>
+    <td class="preencher">[ A PREENCHER ]</td>
+    <td class="preencher">[ A PREENCHER ]</td>
+  </tr>
+</table>
+
+<p class="apoio">Classifica&ccedil;&atilde;o autom&aacute;tica da plataforma, apenas como refer&ecirc;ncia &mdash; Risco Reputacional: {{RISCO_REPUTACIONAL}} | Risco Jur&iacute;dico: {{RISCO_JURIDICO_PLATAFORMA}} | Risco Cr&eacute;dito: {{RISCO_CREDITO}}</p>
+
+<hr>
+
+<h2>Checklist de revis&atilde;o (remover antes de finalizar)</h2>
+<p>&lt;&lt;BLOCO_CHECKLIST&gt;&gt;</p>
