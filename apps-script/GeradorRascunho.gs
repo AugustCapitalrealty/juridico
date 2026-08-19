@@ -218,6 +218,25 @@ function _paragrafoDe(elemento) {
   return null;
 }
 
+/**
+ * Remove um parágrafo com segurança. Se for o último da seção,
+ * mantém um parágrafo vazio para que a seção não fique sem elementos.
+ */
+function _removerParagrafoSeguro(paragrafo) {
+  var pai = paragrafo.getParent();
+  if (!pai) return;
+
+  var indice = pai.getChildIndex(paragrafo);
+  var numFilhos = pai.getNumChildren();
+
+  // Se é o único filho na seção, insira um parágrafo vazio antes de remover
+  if (numFilhos === 1 && indice === 0) {
+    pai.insertParagraph(0, '');
+  }
+
+  paragrafo.removeFromParent();
+}
+
 /** Localiza o parágrafo de um marcador de bloco e devolve pai + índice. */
 function _localizarBloco(corpo, marcador) {
   var achado = corpo.findText(escaparRegex(marcador));
@@ -427,7 +446,7 @@ function _substituirPorParagrafos(local, linhas, destacar) {
     }
   });
 
-  referencia.removeFromParent();
+  _removerParagrafoSeguro(referencia);
 }
 
 /** Troca o parágrafo do marcador por uma lista com marcadores. */
@@ -440,7 +459,7 @@ function _substituirPorLista(local, linhas) {
     if (linha) item.editAsText().setFontSize(10);
   });
 
-  referencia.removeFromParent();
+  _removerParagrafoSeguro(referencia);
 }
 
 /**
@@ -476,7 +495,7 @@ function _substituirPorTabela(local, matriz) {
     }
   }
 
-  referencia.removeFromParent();
+  _removerParagrafoSeguro(referencia);
 }
 
 /**
