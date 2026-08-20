@@ -219,22 +219,16 @@ function _paragrafoDe(elemento) {
 }
 
 /**
- * Remove um parágrafo com segurança. Se for o último da seção,
- * mantém um parágrafo vazio para que a seção não fique sem elementos.
+ * Remove um parágrafo com segurança. O Google Docs recusa remover o último
+ * parágrafo de uma seção (comum logo após quebras de página/seção no
+ * modelo) — nesse caso, em vez de remover, apenas esvazia o parágrafo.
  */
 function _removerParagrafoSeguro(paragrafo) {
-  var pai = paragrafo.getParent();
-  if (!pai) return;
-
-  var indice = pai.getChildIndex(paragrafo);
-  var numFilhos = pai.getNumChildren();
-
-  // Se é o único filho na seção, insira um parágrafo vazio antes de remover
-  if (numFilhos === 1 && indice === 0) {
-    pai.insertParagraph(0, '');
+  try {
+    paragrafo.removeFromParent();
+  } catch (erro) {
+    paragrafo.setText('');
   }
-
-  paragrafo.removeFromParent();
 }
 
 /** Localiza o parágrafo de um marcador de bloco e devolve pai + índice. */
