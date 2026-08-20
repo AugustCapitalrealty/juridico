@@ -174,6 +174,11 @@ function _pendente(mensagem, pendencias) {
 /**
  * Substitui um marcador por várias linhas dentro do mesmo elemento,
  * preservando a formatação do parágrafo original.
+ *
+ * getAttributes() no parágrafo só cobre atributos de parágrafo (alinhamento,
+ * espaçamento); fonte, tamanho e negrito são atributos de texto e precisam
+ * ser copiados à parte via editAsText(), senão as linhas extras voltam ao
+ * padrão do documento.
  */
 function _substituirMultilinha(corpo, marcador, linhas) {
   var achado = corpo.findText(escaparRegex(marcador));
@@ -188,12 +193,16 @@ function _substituirMultilinha(corpo, marcador, linhas) {
 
   var pai = paragrafo.getParent();
   var indice = pai.getChildIndex(paragrafo);
+  var atributosParagrafo = paragrafo.getAttributes();
+  var atributosTexto = paragrafo.editAsText().getAttributes(0);
 
   paragrafo.setText(linhas[0]);
+  paragrafo.editAsText().setAttributes(atributosTexto);
 
   for (var i = 1; i < linhas.length; i++) {
     var novo = pai.insertParagraph(indice + i, linhas[i]);
-    novo.setAttributes(paragrafo.getAttributes());
+    novo.setAttributes(atributosParagrafo);
+    novo.editAsText().setAttributes(atributosTexto);
   }
 
   return true;
@@ -430,11 +439,13 @@ function _blocoTransparencia(corpo, dados) {
 /** Troca o parágrafo do marcador por parágrafos simples. */
 function _substituirPorParagrafos(local, linhas, destacar) {
   var referencia = local.paragrafo;
-  var atributos = referencia.getAttributes();
+  var atributosParagrafo = referencia.getAttributes();
+  var atributosTexto = referencia.editAsText().getAttributes(0);
 
   linhas.forEach(function (linha, i) {
     var novo = local.pai.insertParagraph(local.indice + i, linha);
-    novo.setAttributes(atributos);
+    novo.setAttributes(atributosParagrafo);
+    novo.editAsText().setAttributes(atributosTexto);
     if (destacar && linha) {
       novo.editAsText().setBackgroundColor('#fff2cc').setBold(true);
     }
