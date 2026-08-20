@@ -388,7 +388,15 @@ function _blocoProcessosAndamento(corpo, dados) {
   _substituirPorTabela(local, tabela);
 }
 
-/** Empresas e pessoas ligadas, com destaque para as sinalizadas. */
+/**
+ * Empresas e pessoas ligadas, com destaque para as sinalizadas.
+ *
+ * A planilha traz uma linha por par empresa-sócio, então a mesma empresa
+ * aparece várias vezes seguidas (uma por sócio em comum). Agrupar por
+ * empresa e mostrar em tabela — em vez da lista corrida original — deixa
+ * o vínculo mais fácil de escanear, e ordenar pelo nº de vínculos destaca
+ * primeiro as empresas com mais administradores em comum com a Pesquisada.
+ */
 function _blocoEmpresasRelacionadas(corpo, dados) {
   var local = _localizarBloco(corpo, '<<BLOCO_EMPRESAS_RELACIONADAS>>');
   if (!local) return;
@@ -399,24 +407,50 @@ function _blocoEmpresasRelacionadas(corpo, dados) {
     return;
   }
 
-  var linhas = ['Total de vínculos mapeados: ' + rel.total +
-    ' | com sinalização em PEP/Listas, MPT ou Offshores: ' + rel.comApontamento + '.'];
-
-  // Lista apenas os sinalizados; a relação completa fica na planilha.
   var sinalizados = rel.itens.filter(function (i) { return i.apontamento; });
-  var limite = 25;
-  sinalizados.slice(0, limite).forEach(function (item) {
-    linhas.push(item.nome + (item.cnpj ? ' (' + item.cnpj + ')' : '') +
-      (item.socio ? ' — vínculo por: ' + item.socio : '') +
-      (item.relacao ? ' [' + item.relacao + ']' : ''));
-  });
-
-  if (sinalizados.length > limite) {
-    linhas.push('... e mais ' + (sinalizados.length - limite) +
-      ' vínculos sinalizados. Relação completa na aba "' + ABAS.EMPRESAS_RELACIONADAS + '".');
+  if (sinalizados.length === 0) {
+    _substituirPorParagrafos(local, [
+      'Total de vínculos mapeados: ' + rel.total +
+        '. Nenhum com sinalização em PEP/Listas, MPT ou Offshores.'
+    ], false);
+    return;
   }
 
-  _substituirPorLista(local, linhas);
+  var porEmpresa = {};
+  var ordem = [];
+  sinalizados.forEach(function (item) {
+    var chave = item.nome + '|' + item.cnpj;
+    if (!porEmpresa[chave]) {
+      porEmpresa[chave] = { nome: item.nome, cnpj: item.cnpj, vinculos: [] };
+      ordem.push(chave);
+    }
+    var rotulo = item.socio || '';
+    if (item.relacao) rotulo += (rotulo ? ' — ' : '') + item.relacao;
+    if (rotulo) porEmpresa[chave].vinculos.push(rotulo);
+  });
+
+  var empresas = ordem.map(function (chave) { return porEmpresa[chave]; });
+  empresas.sort(function (a, b) { return b.vinculos.length - a.vinculos.length; });
+
+  var resumo = 'Total de vínculos mapeados: ' + rel.total +
+    ' | com sinalização em PEP/Listas, MPT ou Offshores: ' + rel.comApontamento + '.';
+  var paragrafoResumo = local.pai.insertParagraph(local.indice, resumo);
+  paragrafoResumo.setAttributes(local.paragrafo.getAttributes());
+  paragrafoResumo.editAsText().setItalic(true).setFontSize(9);
+  local.indice += 1;
+
+  var limite = 30;
+  var tabela = [['Empresa', 'CNPJ', 'Vínculo']];
+  empresas.slice(0, limite).forEach(function (emp) {
+    tabela.push([emp.nome, emp.cnpj || '-', emp.vinculos.join('; ')]);
+  });
+
+  if (empresas.length > limite) {
+    tabela.push(['... e mais ' + (empresas.length - limite) +
+      ' empresas sinalizadas. Relação completa na aba "' + ABAS.EMPRESAS_RELACIONADAS + '".', '', '']);
+  }
+
+  _substituirPorTabela(local, tabela);
 }
 
 /** Ocorrências no Portal da Transparência. */
