@@ -51,7 +51,7 @@ O parágrafo inteiro é substituído por conteúdo gerado — lista ou tabela.
 |---|---|
 | `<<BLOCO_SOCIOS>>` | tabela: documento, nome, qualificação, situação |
 | `<<BLOCO_PARTICIPACOES>>` | lista de empresas com CNPJ |
-| `<<BLOCO_EMPRESAS_RELACIONADAS>>` | total de vínculos e os sinalizados (até 25) |
+| `<<BLOCO_EMPRESAS_RELACIONADAS>>` | resumo do total + tabela das empresas sinalizadas, agrupadas (até 30), ordenadas por nº de vínculos |
 | `<<BLOCO_RESUMO_PROCESSOS>>` | distribuição por tribunal e por ano |
 | `<<BLOCO_PROCESSOS_ANDAMENTO>>` | tabela dos processos não encerrados, do maior valor de causa para o menor |
 | `<<BLOCO_TRANSPARENCIA>>` | ocorrências no Portal da Transparência (até 15) |
