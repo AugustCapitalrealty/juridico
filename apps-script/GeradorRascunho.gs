@@ -172,13 +172,16 @@ function _pendente(mensagem, pendencias) {
 }
 
 /**
- * Substitui um marcador por várias linhas dentro do mesmo elemento,
- * preservando a formatação do parágrafo original.
+ * Substitui um marcador por várias linhas dentro do mesmo parágrafo/célula,
+ * usando quebra de linha suave (Shift+Enter, caractere U+000B) em vez de
+ * parágrafos novos.
  *
- * getAttributes() no parágrafo só cobre atributos de parágrafo (alinhamento,
- * espaçamento); fonte, tamanho e negrito são atributos de texto e precisam
- * ser copiados à parte via editAsText(), senão as linhas extras voltam ao
- * padrão do documento.
+ * Criar parágrafos novos exige copiar a formatação do original — e isso
+ * falha quando o tamanho de fonte do marcador vem herdado do estilo do
+ * documento em vez de fixado no caractere, porque getAttributes() só
+ * enxerga o que está sobrescrito explicitamente. Reaproveitando o mesmo
+ * parágrafo/run original não há nada para copiar: a formatação é a mesma
+ * porque é, literalmente, o mesmo texto.
  */
 function _substituirMultilinha(corpo, marcador, linhas) {
   var achado = corpo.findText(escaparRegex(marcador));
@@ -186,25 +189,14 @@ function _substituirMultilinha(corpo, marcador, linhas) {
 
   var elemento = achado.getElement();
   var paragrafo = _paragrafoDe(elemento);
+  var texto = linhas.join('\u000b');
+
   if (!paragrafo) {
-    corpo.replaceText(escaparRegex(marcador), linhas.join(' | '));
+    corpo.replaceText(escaparRegex(marcador), texto);
     return true;
   }
 
-  var pai = paragrafo.getParent();
-  var indice = pai.getChildIndex(paragrafo);
-  var atributosParagrafo = paragrafo.getAttributes();
-  var atributosTexto = paragrafo.editAsText().getAttributes(0);
-
-  paragrafo.setText(linhas[0]);
-  paragrafo.editAsText().setAttributes(atributosTexto);
-
-  for (var i = 1; i < linhas.length; i++) {
-    var novo = pai.insertParagraph(indice + i, linhas[i]);
-    novo.setAttributes(atributosParagrafo);
-    novo.editAsText().setAttributes(atributosTexto);
-  }
-
+  paragrafo.setText(texto);
   return true;
 }
 
