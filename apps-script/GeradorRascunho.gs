@@ -291,7 +291,11 @@ function _blocoCnaeSecundario(corpo, manuais, pendencias) {
   _substituirPorLista(local, linhas);
 }
 
-/** Quadro societário atual e histórico. */
+/**
+ * Quadro societário atual e histórico. Reordena por seção (Ativo antes de
+ * Histórico) em vez de seguir a ordem bruta da planilha, já que a aba QSA
+ * às vezes lista o bloco de históricos antes do de ativos.
+ */
 function _blocoSocios(corpo, dados) {
   var local = _localizarBloco(corpo, '<<BLOCO_SOCIOS>>');
   if (!local) return;
@@ -301,8 +305,14 @@ function _blocoSocios(corpo, dados) {
     return;
   }
 
+  var ordenados = dados.socios.slice().sort(function (a, b) {
+    var pesoA = a.secao === 'Ativo' ? 0 : 1;
+    var pesoB = b.secao === 'Ativo' ? 0 : 1;
+    return pesoA - pesoB;
+  });
+
   var tabela = [['Documento', 'Nome', 'Qualificação', 'Situação']];
-  dados.socios.forEach(function (socio) {
+  ordenados.forEach(function (socio) {
     tabela.push([socio.documento, socio.nome, socio.qualificacao, socio.secao]);
   });
 
