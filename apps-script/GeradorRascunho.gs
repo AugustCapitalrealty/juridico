@@ -189,7 +189,7 @@ function _substituirMultilinha(corpo, marcador, linhas) {
 
   var elemento = achado.getElement();
   var paragrafo = _paragrafoDe(elemento);
-  var texto = linhas.join('\u000b');
+  var texto = _naoVazio(linhas.join('\u000b'));
 
   if (!paragrafo) {
     corpo.replaceText(escaparRegex(marcador), texto);
@@ -223,13 +223,24 @@ function _paragrafoDe(elemento) {
  * Remove um parágrafo com segurança. O Google Docs recusa remover o último
  * parágrafo de uma seção (comum logo após quebras de página/seção no
  * modelo) — nesse caso, em vez de remover, apenas esvazia o parágrafo.
+ * Um parágrafo totalmente vazio também é recusado, daí o espaço.
  */
 function _removerParagrafoSeguro(paragrafo) {
   try {
     paragrafo.removeFromParent();
   } catch (erro) {
-    paragrafo.setText('');
+    paragrafo.setText(' ');
   }
+}
+
+/**
+ * O Google Docs recusa inserir parágrafo, item de lista ou célula de
+ * tabela com texto totalmente vazio — comum quando um campo da planilha
+ * (nome, documento) está em branco. Troca por um espaço nesses casos.
+ */
+function _naoVazio(texto) {
+  var t = String(texto === null || texto === undefined ? '' : texto);
+  return t.length > 0 ? t : ' ';
 }
 
 /** Localiza o parágrafo de um marcador de bloco e devolve pai + índice. */
@@ -435,7 +446,7 @@ function _substituirPorParagrafos(local, linhas, destacar) {
   var atributosTexto = referencia.editAsText().getAttributes(0);
 
   linhas.forEach(function (linha, i) {
-    var novo = local.pai.insertParagraph(local.indice + i, linha);
+    var novo = local.pai.insertParagraph(local.indice + i, _naoVazio(linha));
     novo.setAttributes(atributosParagrafo);
     novo.editAsText().setAttributes(atributosTexto);
     if (destacar && linha) {
@@ -451,7 +462,7 @@ function _substituirPorLista(local, linhas) {
   var referencia = local.paragrafo;
 
   linhas.forEach(function (linha, i) {
-    var item = local.pai.insertListItem(local.indice + i, linha);
+    var item = local.pai.insertListItem(local.indice + i, _naoVazio(linha));
     item.setGlyphType(DocumentApp.GlyphType.BULLET);
     if (linha) item.editAsText().setFontSize(10);
   });
@@ -474,7 +485,10 @@ function _substituirPorTabela(local, matriz) {
     return;
   }
 
-  var tabela = local.pai.insertTable(local.indice, matriz);
+  var matrizSegura = matriz.map(function (linha) {
+    return linha.map(_naoVazio);
+  });
+  var tabela = local.pai.insertTable(local.indice, matrizSegura);
 
   var estiloCorpo = {};
   estiloCorpo[DocumentApp.Attribute.FONT_SIZE] = 8;
