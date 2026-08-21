@@ -1,8 +1,11 @@
 # Gerador de rascunho — Parecer Reputacional
 
-Automação em Google Apps Script que lê a planilha de pesquisa de due diligence
+App interno em Google Apps Script que lê a planilha de pesquisa de due diligence
 e gera um **rascunho** do parecer reputacional no Google Docs, com todos os
 dados objetivos já preenchidos e as seções de análise jurídica em branco.
+
+A equipe abre uma URL, preenche os dados do caso e recebe o link do rascunho.
+Ver [docs/INSTALACAO.md](docs/INSTALACAO.md) para publicar o app.
 
 O objetivo é acabar com o print-e-cola: o que hoje é transcrito à mão da
 planilha para o documento passa a ser preenchido pelo script. O que é
@@ -33,7 +36,7 @@ Conferido contra o parecer da Azimute Engenheiros Consultores, redigido à mão:
 
 Dois grupos, ambos sinalizados no rascunho e listados no checklist final.
 
-**Não existe na planilha** — preenchido no painel antes de gerar:
+**Não existe na planilha** — preenchido no formulário antes de gerar:
 
 - CNAEs secundários (não constam no relatório; vêm do cartão CNPJ)
 - COMPROT
@@ -52,7 +55,7 @@ Dois grupos, ambos sinalizados no rascunho e listados no checklist final.
 ```
 apps-script/         código que roda no Google Apps Script
   Config.gs            IDs do modelo e da pasta, nomes das abas, campos manuais
-  Menu.gs              menu do painel, leitura dos campos, disparo da geração
+  WebApp.gs            app da web: formulário, validação e disparo da geração
   LeitorPlanilha.gs    leitura e consolidação da planilha de pesquisa
   GeradorRascunho.gs   cópia do modelo e preenchimento dos marcadores
   Utils.gs             formatação BRL, datas, documentos e valor por extenso

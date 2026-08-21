@@ -51,6 +51,12 @@ function gerarRascunho(dados, manuais) {
 
   _inserirChecklist(corpo, dados, pendencias);
 
+  // Rede de segurança: nenhum marcador pode sobreviver até o documento final.
+  // _sinalizarMarcadoresOrfaos roda antes do checklist e ignora o marcador
+  // dele por construção, então sem esta varredura o checklist seria o único
+  // marcador capaz de vazar sem ninguém ser avisado.
+  _limparMarcadoresRestantes(corpo);
+
   documento.saveAndClose();
 
   return {
@@ -601,6 +607,12 @@ function _inserirChecklist(corpo, dados, pendencias) {
   linhas.forEach(function (linha) {
     corpo.appendParagraph(linha).setFontSize(9);
   });
+}
+
+/** Apaga qualquer marcador que tenha sobrado, já com as pendências registradas. */
+function _limparMarcadoresRestantes(corpo) {
+  corpo.replaceText('\\{\\{[A-Z_0-9]+\\}\\}', '');
+  corpo.replaceText('<<[A-Z_0-9]+>>', '');
 }
 
 /**
