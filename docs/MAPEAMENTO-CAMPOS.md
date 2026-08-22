@@ -55,7 +55,7 @@ O parágrafo inteiro é substituído por conteúdo gerado — lista ou tabela.
 | `<<BLOCO_RESUMO_PROCESSOS>>` | distribuição por tribunal e por ano |
 | `<<BLOCO_PROCESSOS_ANDAMENTO>>` | tabela dos processos não encerrados, do maior valor de causa para o menor |
 | `<<BLOCO_TRANSPARENCIA>>` | ocorrências no Portal da Transparência (até 15) |
-| `<<BLOCO_CNAE_SECUNDARIO>>` | CNAEs do painel; vazio vira bloco "A PREENCHER" |
+| `<<BLOCO_CNAE_SECUNDARIO>>` | CNAEs do cartão CNPJ (BrasilAPI); o campo do formulário sobrescreve |
 | `<<BLOCO_CHECKLIST>>` | pendências, avisos de leitura e data de geração |
 
 ## Como os números dos processos são apurados
@@ -74,6 +74,27 @@ do cabeçalho.
 
 Linhas com polo `N/D` não entram em nenhuma das somas, o que reproduz o
 critério do parecer redigido à mão.
+
+## Cartão CNPJ (BrasilAPI)
+
+Os CNAEs secundários não constam no relatório da plataforma. Em vez de
+digitação manual, `CartaoCNPJ.gs` consulta
+`https://brasilapi.com.br/api/cnpj/v1/{cnpj}` com o CNPJ que a planilha já
+traz, e usa `cnaes_secundarios`.
+
+Duas armadilhas do contrato da API, ambas cobertas por teste:
+
+- **O código do CNAE vem como número**, então o zero à esquerda se perde:
+  `230600`, não `"0230600"`. Sem completar para 7 dígitos, `02.30-6-00`
+  sairia como `23.06-0-0`.
+- **O CNPJ pode ser alfanumérico** (formato novo, já aceito pela API). A
+  limpeza tira só pontuação; um `replace(/\D/g)` comeria as letras.
+
+A consulta nunca derruba a geração: falha vira aviso no checklist e o campo
+volta a ser preenchido à mão. O resultado fica em cache por 6 horas.
+
+`testarCartaoCNPJ()` roda no editor do Apps Script e mostra a resposta crua
+nos registros de execução — é como conferir se o contrato mudou.
 
 ## Conversão de números
 

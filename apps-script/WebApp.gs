@@ -67,6 +67,12 @@ function gerarParecerWeb(dados) {
     }
 
     var pesquisa = lerPlanilhaPesquisa(idPesquisa);
+
+    // Completa os CNAEs secundários pelo cartão CNPJ quando o campo veio
+    // vazio. Nunca sobrescreve o que foi digitado e nunca lança exceção:
+    // falha na consulta vira alerta no checklist.
+    enriquecerComCartaoCNPJ(pesquisa, manuais, pesquisa.alertas);
+
     var resultado = gerarRascunho(pesquisa, manuais);
 
     return {
@@ -97,11 +103,28 @@ function testarLeituraWeb(dados) {
     var d = lerPlanilhaPesquisa(idPesquisa);
     var p = d.processos;
 
+    // Consulta o cartão CNPJ aqui também: é o lugar de descobrir que a API
+    // mudou de formato, antes de gerar documento.
+    var cartao = consultarCartaoCNPJ(d.cnpj);
+    var alertas = (d.alertas || []).slice();
+    if (!cartao.ok) alertas.push('Cartão CNPJ (BrasilAPI): ' + cartao.erro);
+
     return {
       ok: true,
       empresa: d.razaoSocial || '',
-      alertas: d.alertas || [],
+      alertas: alertas,
+      cnaes: cartao.ok ? cartao.cnaesSecundarios : [],
       grupos: [
+        {
+          titulo: 'Cartão CNPJ (BrasilAPI)',
+          itens: [
+            { rotulo: 'Consulta', valor: cartao.ok ? 'OK' : 'Falhou' },
+            { rotulo: 'CNAEs secundários', valor: cartao.ok ? String(cartao.cnaesSecundarios.length) : '—' },
+            { rotulo: 'CNAE principal', valor: cartao.cnaePrincipal || '—' },
+            { rotulo: 'Natureza jurídica', valor: cartao.naturezaJuridica || '—' },
+            { rotulo: 'Situação cadastral', valor: cartao.situacao || '—' }
+          ]
+        },
         {
           titulo: 'Identificação',
           itens: [
@@ -445,6 +468,19 @@ function getPaginaHTML() {
     }
     .teste-rotulo { font-size: 11px; color: var(--muted-fg); margin-bottom: 3px; }
     .teste-valor { font-size: 15px; font-weight: 600; }
+
+    .lista-cnae {
+      list-style: none;
+      border: 1px solid var(--hairline);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .lista-cnae li {
+      font-size: 13px;
+      padding: 9px 14px;
+      line-height: 1.45;
+    }
+    .lista-cnae li + li { border-top: 1px solid var(--hairline); }
   </style>
 </head>
 <body>
@@ -537,7 +573,11 @@ function getPaginaHTML() {
               </div>
               <label class="campo">
                 <span class="campo-rotulo">CNAEs secundários</span>
-                <textarea id="CNAE_SECUNDARIO" placeholder="Um por linha, copiados do cartão CNPJ da Receita Federal"></textarea>
+                <textarea id="CNAE_SECUNDARIO" placeholder="Deixe vazio: buscamos no cartão CNPJ automaticamente"></textarea>
+                <span class="campo-dica">
+                  Preenchido pela BrasilAPI a partir do CNPJ. Só digite aqui para
+                  sobrescrever o que vier da consulta.
+                </span>
               </label>
             </div>
           </div>
@@ -761,6 +801,13 @@ function getPaginaHTML() {
       });
       html += '</div></div>';
     });
+
+    if ((res.cnaes || []).length > 0) {
+      html += '<div class="teste-grupo"><h3>CNAEs secundários encontrados</h3>' +
+              '<ul class="lista-cnae">';
+      res.cnaes.forEach(function (c) { html += '<li>' + escapar(c) + '</li>'; });
+      html += '</ul></div>';
+    }
 
     if ((res.alertas || []).length > 0) {
       html += '<div class="bloco-pendencias"><h3>Avisos de leitura</h3><ul class="lista-check">';

@@ -23,6 +23,7 @@ O `Config.gs` já aponta para o modelo e para a pasta de destino corretos.
    - `Config.gs`
    - `Utils.gs`
    - `LeitorPlanilha.gs`
+   - `CartaoCNPJ.gs`
    - `GeradorRascunho.gs`
    - `WebApp.gs`
 5. Salve (Ctrl+S).
@@ -42,6 +43,18 @@ O `Config.gs` já aponta para o modelo e para a pasta de destino corretos.
 5. Na primeira autorização aparece "app não verificado": é esperado para
    scripts internos. Clique em **Avançado → Acessar (nome do projeto)**.
 6. Copie a **URL do app da web** e distribua para a equipe.
+
+> A autorização inclui acesso à internet (`script.external_request`), usado
+> para consultar o cartão CNPJ na BrasilAPI.
+
+## 3. Conferir a consulta ao cartão CNPJ
+
+No editor, selecione a função `testarCartaoCNPJ` e clique em **Executar**.
+Abra **Registros de execução**: deve listar os CNAEs secundários da Azimute.
+
+Vale rodar depois de qualquer atualização do código — é a forma mais rápida
+de descobrir que a BrasilAPI mudou de formato, antes que isso apareça num
+parecer.
 
 > Ao alterar o código depois, é preciso **Implantar → Gerenciar implantações →
 > editar → Nova versão**. Sem isso a URL continua servindo a versão antiga.

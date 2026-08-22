@@ -38,10 +38,15 @@ Dois grupos, ambos sinalizados no rascunho e listados no checklist final.
 
 **Não existe na planilha** — preenchido no formulário antes de gerar:
 
-- CNAEs secundários (não constam no relatório; vêm do cartão CNPJ)
 - COMPROT
 - Valores e período do Portal da Transparência
 - Valor da contratação, escopo, nº da solicitação, empreendimento
+
+Os **CNAEs secundários** saíram dessa lista: não constam no relatório da
+plataforma, mas vêm do cartão CNPJ pela [BrasilAPI](https://brasilapi.com.br),
+consultado com o CNPJ que a planilha já traz. O campo do formulário continua
+existindo para sobrescrever a consulta; digitar nele sempre vence. Falha de
+rede ou CNPJ não encontrado viram aviso no checklist, nunca erro de geração.
 
 **É julgamento jurídico** — escrito no documento, com dados de apoio ao lado:
 
@@ -57,6 +62,7 @@ apps-script/         código que roda no Google Apps Script
   Config.gs            IDs do modelo e da pasta, nomes das abas, campos manuais
   WebApp.gs            app da web: formulário, validação e disparo da geração
   LeitorPlanilha.gs    leitura e consolidação da planilha de pesquisa
+  CartaoCNPJ.gs        consulta à BrasilAPI para os CNAEs secundários
   GeradorRascunho.gs   cópia do modelo e preenchimento dos marcadores
   Utils.gs             formatação BRL, datas, documentos e valor por extenso
 modelo/
@@ -77,6 +83,9 @@ conferir o leitor contra uma planilha real sem abrir o navegador:
 ```bash
 python3 testes/gerar-dump.py pesquisa.xlsx testes/planilha-exemplo.json
 node testes/executar-testes.js testes/planilha-exemplo.json
+
+# Consulta ao cartão CNPJ: formatação do código CNAE e mapeamento do payload
+node testes/testar-cartao-cnpj.js
 ```
 
 Os valores esperados são os do parecer da Azimute redigido à mão — inclusive
