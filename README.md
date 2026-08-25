@@ -66,6 +66,7 @@ apps-script/         código que roda no Google Apps Script
   WebApp.gs            app da web: formulário, validação e disparo da geração
   LeitorPlanilha.gs    leitura e consolidação da planilha de pesquisa
   CartaoCNPJ.gs        consulta à BrasilAPI para os CNAEs secundários
+  PortalTransparencia.gs  cliente da API da CGU (em desenvolvimento)
   GeradorRascunho.gs   cópia do modelo e preenchimento dos marcadores
   Utils.gs             formatação BRL, datas, documentos e valor por extenso
 modelo/

@@ -24,6 +24,7 @@ O `Config.gs` já aponta para o modelo e para a pasta de destino corretos.
    - `Utils.gs`
    - `LeitorPlanilha.gs`
    - `CartaoCNPJ.gs`
+   - `PortalTransparencia.gs`
    - `GeradorRascunho.gs`
    - `WebApp.gs`
 5. Salve (Ctrl+S).
@@ -55,6 +56,23 @@ Abra **Registros de execução**: deve listar os CNAEs secundários da Azimute.
 Vale rodar depois de qualquer atualização do código — é a forma mais rápida
 de descobrir que a BrasilAPI mudou de formato, antes que isso apareça num
 parecer.
+
+## 4. Token do Portal da Transparência (opcional, em desenvolvimento)
+
+A API da CGU permite consultar, pelo CNPJ, o valor recebido de entes
+públicos e as listas restritivas oficiais (CEIS, CNEP, CEPIM, acordos de
+leniência). Exige token gratuito.
+
+1. Cadastre um e-mail em
+   <https://portaldatransparencia.gov.br/api-de-dados/cadastrar-email>.
+2. No editor, rode `definirTokenPortal('o-token-recebido')` **uma vez**.
+   O token vai para as Propriedades do Script — nunca para o código, que é
+   versionado.
+3. Rode `testarPortalTransparencia()` e confira os **Registros de execução**.
+
+> Enquanto o parsing das respostas não estiver escrito, o gerador não usa
+> essas consultas: elas existem só no diagnóstico. O valor do Portal da
+> Transparência continua sendo digitado no formulário.
 
 > Ao alterar o código depois, é preciso **Implantar → Gerenciar implantações →
 > editar → Nova versão**. Sem isso a URL continua servindo a versão antiga.
