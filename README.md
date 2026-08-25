@@ -39,7 +39,9 @@ Dois grupos, ambos sinalizados no rascunho e listados no checklist final.
 **Não existe na planilha** — preenchido no formulário antes de gerar:
 
 - COMPROT
-- Valores e período do Portal da Transparência
+- Valor recebido do Portal da Transparência (a planilha traz os links dos
+  documentos, mas a coluna de descrição vem vazia — só o valor é digitado;
+  a contagem de pagamentos e os exercícios saem dos códigos)
 - Valor da contratação, escopo, nº da solicitação, empreendimento
 
 Os **CNAEs secundários** saíram dessa lista: não constam no relatório da
@@ -87,6 +89,9 @@ node testes/executar-testes.js testes/planilha-exemplo.json
 
 # Consulta ao cartão CNPJ: formatação do código CNAE e mapeamento do payload
 node testes/testar-cartao-cnpj.js
+
+# Portal da Transparência: separação entre pagamento e vínculo cadastral
+node testes/testar-transparencia.js
 ```
 
 Os valores esperados são os do parecer da Azimute redigido à mão — inclusive

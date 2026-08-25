@@ -472,21 +472,47 @@ function _blocoEmpresasRelacionadas(corpo, dados) {
   _substituirPorTabela(local, tabela);
 }
 
-/** Ocorrências no Portal da Transparência. */
+/**
+ * Ocorrências no Portal da Transparência, separando o que é dinheiro
+ * recebido do que é apenas vínculo cadastral.
+ *
+ * A busca do portal devolve os dois misturados: documentos de pagamento e
+ * as páginas da empresa e de cada sócio. Listar tudo junto como "ocorrências"
+ * sugere que a empresa recebeu 13 vezes quando foram 8 pagamentos e 5 links
+ * de cadastro — diferença que muda a leitura da seção.
+ */
 function _blocoTransparencia(corpo, dados) {
   var local = _localizarBloco(corpo, '<<BLOCO_TRANSPARENCIA>>');
   if (!local) return;
 
-  var itens = (dados.transparencia && dados.transparencia.itens) || [];
+  var t = dados.transparencia || {};
+  var itens = t.itens || [];
   if (itens.length === 0) {
     _substituirPorParagrafos(local, ['Nenhuma ocorrência no Portal da Transparência.'], false);
     return;
   }
 
-  var limite = 15;
-  var linhas = itens.slice(0, limite).map(function (item) { return item.titulo; });
-  if (itens.length > limite) {
-    linhas.push('... e mais ' + (itens.length - limite) + ' ocorrências.');
+  var pagamentos = t.pagamentos || [];
+  var vinculos = t.vinculos || [];
+  var linhas = [];
+
+  if (pagamentos.length > 0) {
+    var periodo = (t.anos || []).length > 0
+      ? ' — exercícios ' + t.anos.join(', ')
+      : '';
+    linhas.push('Documentos de pagamento: ' + pagamentos.length + periodo + '.');
+    var limite = 15;
+    pagamentos.slice(0, limite).forEach(function (item) {
+      linhas.push(item.titulo);
+    });
+    if (pagamentos.length > limite) {
+      linhas.push('... e mais ' + (pagamentos.length - limite) + ' documentos.');
+    }
+  }
+
+  if (vinculos.length > 0) {
+    linhas.push('Vínculos cadastrais (empresa e sócios), sem valor associado: ' +
+      vinculos.length + '.');
   }
 
   _substituirPorLista(local, linhas);
@@ -579,6 +605,18 @@ function _inserirChecklist(corpo, dados, pendencias) {
   if (dados.alertas && dados.alertas.length > 0) {
     linhas.push('Avisos de leitura da planilha:');
     dados.alertas.forEach(function (a) { linhas.push('   • ' + a); });
+  }
+
+  // O período do Portal da Transparência é digitado à mão, mas os exercícios
+  // estão nos códigos dos documentos de pagamento. Conferir os dois é a
+  // forma de pegar um período colado de outro parecer.
+  var t = dados.transparencia || {};
+  if ((t.pagamentos || []).length > 0 && (t.anos || []).length > 0) {
+    linhas.push('Portal da Transparência: ' + t.pagamentos.length +
+      ' documento(s) de pagamento, nos exercícios ' + t.anos.join(', ') +
+      '. Confira se o período que você informou bate com esses anos. ' +
+      'As outras ' + (t.vinculos || []).length +
+      ' ocorrência(s) são vínculos cadastrais da empresa e dos sócios, sem valor.');
   }
 
   // "Em andamento" conta só os em tramitação; os demais não encerrados

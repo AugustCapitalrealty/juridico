@@ -470,18 +470,39 @@ function _lerContato(planilha, nomeAba, nomesColuna) {
 /** Portal da Transparência, diários oficiais e buscadores. */
 function _lerFontesPublicas(planilha, dados) {
   var transparencia = _valores(planilha, ABAS.TRANSPARENCIA);
-  dados.transparencia = { quantidade: 0, itens: [] };
+  dados.transparencia = { quantidade: 0, itens: [], pagamentos: [], vinculos: [], anos: [] };
   if (transparencia.length >= 2) {
     var cab = transparencia[0];
     var iTitulo = _indiceColuna(cab, ['Titulo', 'Título']);
     var iUrl = _indiceColuna(cab, ['URL']);
     _linhasDados(transparencia).forEach(function (linha) {
-      dados.transparencia.itens.push({
+      var item = {
         titulo: String(iTitulo >= 0 ? linha[iTitulo] : '').trim(),
         url: String(iUrl >= 0 ? linha[iUrl] : '').trim()
-      });
+      };
+
+      // Nem toda ocorrência é dinheiro recebido: a busca do portal devolve
+      // também a página da empresa e uma linha por sócio. Tratar as duas
+      // como "recebimento" infla o número que vai para o parecer.
+      item.tipo = item.url.indexOf('/despesas/pagamento/') >= 0 ? 'pagamento' : 'vinculo';
+
+      // O código do documento carrega o exercício: 2019DF800006 -> 2019.
+      var ano = item.titulo.match(/(20\d\d)[A-Z]{2}\d/);
+      if (!ano) ano = item.url.match(/(20\d\d)[A-Z]{2}\d/);
+      item.ano = ano ? ano[1] : '';
+
+      dados.transparencia.itens.push(item);
+      if (item.tipo === 'pagamento') {
+        dados.transparencia.pagamentos.push(item);
+        if (item.ano && dados.transparencia.anos.indexOf(item.ano) < 0) {
+          dados.transparencia.anos.push(item.ano);
+        }
+      } else {
+        dados.transparencia.vinculos.push(item);
+      }
     });
     dados.transparencia.quantidade = dados.transparencia.itens.length;
+    dados.transparencia.anos.sort();
   }
 
   var diarios = _valores(planilha, ABAS.DIARIOS);

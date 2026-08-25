@@ -54,7 +54,7 @@ O parágrafo inteiro é substituído por conteúdo gerado — lista ou tabela.
 | `<<BLOCO_EMPRESAS_RELACIONADAS>>` | resumo do total + tabela das empresas sinalizadas, agrupadas (até 30), ordenadas por nº de vínculos |
 | `<<BLOCO_RESUMO_PROCESSOS>>` | distribuição por tribunal e por ano |
 | `<<BLOCO_PROCESSOS_ANDAMENTO>>` | tabela dos processos não encerrados, do maior valor de causa para o menor |
-| `<<BLOCO_TRANSPARENCIA>>` | ocorrências no Portal da Transparência (até 15) |
+| `<<BLOCO_TRANSPARENCIA>>` | documentos de pagamento (com exercícios) e contagem de vínculos cadastrais |
 | `<<BLOCO_CNAE_SECUNDARIO>>` | CNAEs do cartão CNPJ (BrasilAPI); falha vira bloco "A PREENCHER" |
 | `<<BLOCO_CHECKLIST>>` | pendências, avisos de leitura e data de geração |
 
@@ -97,6 +97,30 @@ volta a ser preenchido à mão. O resultado fica em cache por 6 horas.
 
 `testarCartaoCNPJ()` roda no editor do Apps Script e mostra a resposta crua
 nos registros de execução — é como conferir se o contrato mudou.
+
+## Portal da Transparência
+
+A aba tem três colunas — `Titulo`, `URL`, `Descrição` — e a `Descrição` vem
+**vazia**. O valor recebido não está na planilha: quem redige abre os links e
+soma. Por isso `TRANSPARENCIA_TEXTO` continua sendo digitado.
+
+O que dá para apurar sozinho, e o script apura:
+
+- **Tipo de ocorrência**, pela URL. `/despesas/pagamento/` é dinheiro
+  recebido; o resto é a página cadastral da empresa e uma linha por sócio.
+  Na Azimute são 8 pagamentos e 5 vínculos, não "13 recebimentos".
+- **Exercício**, pelo código do documento: `2019DF800006` → 2019.
+
+Os exercícios encontrados vão para o checklist para serem comparados com o
+período digitado. Na pesquisa da Azimute os códigos são de **2019 e 2021**,
+enquanto o parecer redigido à mão diz "de 2013 a 2020" — divergência que o
+script sinaliza sem resolver, porque não dá para saber daqui se o período do
+parecer veio do próprio portal (que mostra mais histórico que a busca) ou de
+um parecer anterior.
+
+**O valor não é automatizável pela planilha.** A CGU publica uma API em
+`api.portaldatransparencia.gov.br` que exige token gratuito por cadastro;
+seria o caminho, mas é integração nova e não foi feita.
 
 ## Conversão de números
 
