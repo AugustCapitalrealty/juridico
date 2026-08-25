@@ -503,8 +503,8 @@ function getPaginaHTML() {
           <p>
             Preencha os dados do caso e o sistema monta o rascunho a partir da planilha
             de pesquisa: identificação, processos, restrições e quadro societário já
-            preenchidos. As seções de análise jurídica ficam em branco, com os dados de
-            apoio ao lado.
+            preenchidos, mais os CNAEs secundários buscados no cartão CNPJ. As seções
+            de análise jurídica ficam em branco, com os dados de apoio ao lado.
           </p>
         </div>
 
@@ -560,24 +560,14 @@ function getPaginaHTML() {
               Não constam no relatório da plataforma. Deixe em branco o que não se
               aplica &mdash; o campo vira uma pendência sinalizada no rascunho.
             </p>
-            <div class="campos">
-              <div class="campos duas" style="gap:18px">
-                <label class="campo">
-                  <span class="campo-rotulo">COMPROT</span>
-                  <input type="text" id="COMPROT" placeholder="120 resultados mapeados">
-                </label>
-                <label class="campo">
-                  <span class="campo-rotulo">Portal da Transparência</span>
-                  <input type="text" id="TRANSPARENCIA_TEXTO" placeholder="no período de 2013 a 2020 recebeu R$ 31.362,25">
-                </label>
-              </div>
+            <div class="campos duas">
               <label class="campo">
-                <span class="campo-rotulo">CNAEs secundários</span>
-                <textarea id="CNAE_SECUNDARIO" placeholder="Deixe vazio: buscamos no cartão CNPJ automaticamente"></textarea>
-                <span class="campo-dica">
-                  Preenchido pela BrasilAPI a partir do CNPJ. Só digite aqui para
-                  sobrescrever o que vier da consulta.
-                </span>
+                <span class="campo-rotulo">COMPROT</span>
+                <input type="text" id="COMPROT" placeholder="120 resultados mapeados">
+              </label>
+              <label class="campo">
+                <span class="campo-rotulo">Portal da Transparência</span>
+                <input type="text" id="TRANSPARENCIA_TEXTO" placeholder="no período de 2013 a 2020 recebeu R$ 31.362,25">
               </label>
             </div>
           </div>
@@ -641,7 +631,7 @@ function getPaginaHTML() {
 
 <script>
   var CHAVES = ['LINK_PLANILHA','DATA_PESQUISA','ESCOPO','SOLICITACAO','EMPREENDIMENTO',
-                'VALOR_CONTRATACAO','COMPROT','TRANSPARENCIA_TEXTO','CNAE_SECUNDARIO'];
+                'VALOR_CONTRATACAO','COMPROT','TRANSPARENCIA_TEXTO'];
   var OBRIGATORIOS = ['LINK_PLANILHA','ESCOPO','SOLICITACAO','EMPREENDIMENTO','VALOR_CONTRATACAO'];
 
   var el = function (id) { return document.getElementById(id); };
@@ -823,7 +813,7 @@ function getPaginaHTML() {
 
   el('btnNovo').addEventListener('click', function () {
     ['ESCOPO','SOLICITACAO','EMPREENDIMENTO','VALOR_CONTRATACAO',
-     'COMPROT','TRANSPARENCIA_TEXTO','CNAE_SECUNDARIO'].forEach(function (c) {
+     'COMPROT','TRANSPARENCIA_TEXTO'].forEach(function (c) {
       var campo = el(c);
       if (campo) campo.value = '';
     });

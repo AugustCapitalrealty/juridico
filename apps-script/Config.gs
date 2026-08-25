@@ -107,11 +107,12 @@ var CAMPOS_MANUAIS = [
     rotulo: 'Portal da Transparência - valores/período',
     exemplo: 'no período de 2013 a 2020 recebeu R$ 31.362,25',
     obrigatorio: false
-  },
-  {
-    chave: 'CNAE_SECUNDARIO',
-    rotulo: 'CNAEs secundários (um por linha)',
-    exemplo: 'não consta no relatório - copiar do cartão CNPJ',
-    obrigatorio: false
   }
 ];
+
+/*
+ * CNAE_SECUNDARIO saiu desta lista: deixou de ser digitado e passou a vir do
+ * cartão CNPJ pela BrasilAPI (CartaoCNPJ.gs). O marcador continua existindo
+ * no modelo e o valor continua trafegando em `manuais`, só que preenchido
+ * por enriquecerComCartaoCNPJ em vez de pelo formulário.
+ */

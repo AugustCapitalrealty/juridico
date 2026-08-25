@@ -44,9 +44,10 @@ Dois grupos, ambos sinalizados no rascunho e listados no checklist final.
 
 Os **CNAEs secundários** saíram dessa lista: não constam no relatório da
 plataforma, mas vêm do cartão CNPJ pela [BrasilAPI](https://brasilapi.com.br),
-consultado com o CNPJ que a planilha já traz. O campo do formulário continua
-existindo para sobrescrever a consulta; digitar nele sempre vence. Falha de
-rede ou CNPJ não encontrado viram aviso no checklist, nunca erro de geração.
+consultado com o CNPJ que a planilha já traz. Eram 17 linhas copiadas à mão no
+caso Azimute; hoje o formulário nem pergunta. Falha de rede ou CNPJ não
+encontrado viram aviso no checklist e a seção fica marcada como pendente —
+nunca erro de geração.
 
 **É julgamento jurídico** — escrito no documento, com dados de apoio ao lado:
 

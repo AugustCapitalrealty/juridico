@@ -55,7 +55,7 @@ O parágrafo inteiro é substituído por conteúdo gerado — lista ou tabela.
 | `<<BLOCO_RESUMO_PROCESSOS>>` | distribuição por tribunal e por ano |
 | `<<BLOCO_PROCESSOS_ANDAMENTO>>` | tabela dos processos não encerrados, do maior valor de causa para o menor |
 | `<<BLOCO_TRANSPARENCIA>>` | ocorrências no Portal da Transparência (até 15) |
-| `<<BLOCO_CNAE_SECUNDARIO>>` | CNAEs do cartão CNPJ (BrasilAPI); o campo do formulário sobrescreve |
+| `<<BLOCO_CNAE_SECUNDARIO>>` | CNAEs do cartão CNPJ (BrasilAPI); falha vira bloco "A PREENCHER" |
 | `<<BLOCO_CHECKLIST>>` | pendências, avisos de leitura e data de geração |
 
 ## Como os números dos processos são apurados
@@ -80,7 +80,9 @@ critério do parecer redigido à mão.
 Os CNAEs secundários não constam no relatório da plataforma. Em vez de
 digitação manual, `CartaoCNPJ.gs` consulta
 `https://brasilapi.com.br/api/cnpj/v1/{cnpj}` com o CNPJ que a planilha já
-traz, e usa `cnaes_secundarios`.
+traz, e usa `cnaes_secundarios`. Por isso o formulário não tem campo para
+eles: `enriquecerComCartaoCNPJ` preenche `manuais.CNAE_SECUNDARIO` antes de
+`gerarRascunho` ser chamado.
 
 Duas armadilhas do contrato da API, ambas cobertas por teste:
 

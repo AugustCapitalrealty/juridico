@@ -66,7 +66,9 @@ parecer.
 3. Preencha o formulário:
    - link da planilha daquele caso (obrigatório)
    - escopo, nº da solicitação, empreendimento, valor da contratação (obrigatórios)
-   - COMPROT, Portal da Transparência, CNAEs secundários (quando houver)
+   - COMPROT e Portal da Transparência (quando houver)
+
+   Os CNAEs secundários não são pedidos: vêm do cartão CNPJ automaticamente.
 4. **Testar leitura** confere os números da planilha sem criar arquivo — vale
    fazer na primeira vez que usar um relatório de formato diferente.
 5. **Gerar rascunho**. A tela devolve o link do documento e a lista de pontos

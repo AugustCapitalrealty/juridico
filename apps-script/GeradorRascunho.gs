@@ -276,8 +276,10 @@ function _preencherBlocos(corpo, dados, manuais, pendencias) {
 }
 
 /**
- * CNAEs secundários não constam no relatório da plataforma; vêm do painel,
- * um por linha. Sem preenchimento, o bloco fica marcado como pendente.
+ * CNAEs secundários não constam no relatório da plataforma: chegam em
+ * `manuais.CNAE_SECUNDARIO`, um por linha, preenchidos por
+ * enriquecerComCartaoCNPJ a partir do cartão CNPJ. Quando a consulta falha o
+ * bloco fica marcado como pendente e o motivo aparece nos avisos de leitura.
  */
 function _blocoCnaeSecundario(corpo, manuais, pendencias) {
   var local = _localizarBloco(corpo, '<<BLOCO_CNAE_SECUNDARIO>>');
@@ -289,7 +291,8 @@ function _blocoCnaeSecundario(corpo, manuais, pendencias) {
     .filter(function (l) { return l.length > 0; });
 
   if (linhas.length === 0) {
-    pendencias.push('CNAEs secundários não informados (não constam no relatório da plataforma).');
+    pendencias.push('CNAEs secundários em branco — a consulta ao cartão CNPJ não trouxe ' +
+      'resultado (o motivo está nos avisos de leitura).');
     _substituirPorParagrafos(local, ['[ A PREENCHER — copiar do cartão CNPJ da Receita Federal ]'], true);
     return;
   }
